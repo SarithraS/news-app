@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>News App</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      transition: background-color 0.3s ease;
+    }
+
+    header {
+      background-color: #4285f4;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    label {
+      margin-right: 10px;
+      color: #fff;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      background-color: #4285f4;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    select:hover {
+      background-color: #3367d6;
+    }
+
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      padding: 20px;
+    }
+
+    article {
+      border: 2px solid #ddd;
+      margin: 10px;
+      padding: 20px;
+      transition: box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    article:nth-child(odd) {
+      background-color: #f6c7c9; /* Light Pink */
+    }
+
+    article:nth-child(even) {
+      background-color: #c0d7f2; /* Light Blue */
+    }
+
+    article:nth-child(3n) {
+      background-color: #d8c8f9; /* Light Purple */
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #333;
+    }
+
+    p {
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    a {
+      color: #007BFF;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #0056b3;
+    }
+
+    /* Add a subtle box-shadow effect to articles on hover */
+    article:hover {
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      transform: translateY(-5px);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Fade-in animation */
+    article:not(:first-child) {
+      opacity: 0;
+    }
+
+    article.visible {
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>News App</h1>
+    <label for="category">Filter by Category:</label>
+    <select id="category" onchange="fetchNews()">
+      <option value="general">General</option>
+      <option value="business">Business</option>
+      <option value="technology">Technology</option>
+      <option value="science">Science</option>
+      <option value="health">Health</option>
+    </select>
+  </header>
+
+  <main id="news-list">
+    <!-- News articles will be displayed here -->
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', fetchNews);
+
+    function fetchNews() {
+      const category = document.getElementById('category').value;
+      const apiKey = '215a3ba11e3949fb9e9e368b5c3d35fb'; // Replace with your actual API key from NewsAPI.org
+      const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => displayNews(data.articles))
+        .catch(error => console.error('Error fetching news:', error));
+    }
+
+    function displayNews(articles) {
+      const newsList = document.getElementById('news-list');
+      newsList.innerHTML = '';
+
+      articles.forEach((article, index) => {
+        const articleElement = document.createElement('article');
+        articleElement.innerHTML = `
+          <h2>${article.title}</h2>
+          <p>${article.description}</p>
+          <a href="${article.url}" target="_blank">Read more</a>
+        `;
+        articleElement.classList.add('visible');
+        articleElement.addEventListener('click', () => alignArticles(index));
+        newsList.appendChild(articleElement);
+      });
+    }
+
+    function alignArticles(index) {
+      const articles = document.querySelectorAll('article');
+      articles.forEach((article, i) => {
+        article.style.transform = `translateY(${(i - index) * 5}px)`;
+      });
+    }
+  </script>
+</body>
+</html>
